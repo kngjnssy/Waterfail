@@ -25,7 +25,7 @@ const int buttonPin = 2;
 int buttonState = 0;         // variable for reading the pushbutton status
 
 
-const int optimalHumidity = 40; 
+const int optimalHumidity = 50; 
 
 void setup() {
   Serial.begin(9600);
@@ -173,21 +173,23 @@ void loop() {
     matrix.setTextColor(matrix.Color333(7, 2, 2));
     matrix.print(humDHT11);
     matrix.println("%");
-    matrix.println("still");  
-    matrix.println("LOW!");  
+    // matrix.println("still");  
+    matrix.println(" LOW!");  
+        // matrix.println("turn");
+    // matrix.println(" it");
+    // matrix.println("it on!");  
     delay(2000);
 
 // ideally, when it's plugged in: 
-    for (int drop = 0; drop < 31; drop++) {
-      matrix.fillRect(0, 0, 32, drop, matrix.Color333(0, 6, 6));
-      // delay(100);
-      int randomVertical = random(0, 32);
-      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 3, 3));
-      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 2, 4));
-      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 0, 0));
-      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 1, 4));
-      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 7, 7));
-    }
+    // for (int drop = 0; drop < 31; drop++) {
+    //   // delay(100);
+    //   int randomVertical = random(0, 32);
+    //   matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 3, 3));
+    //   matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 2, 4));
+    //   matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 0, 0));
+    //   matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 1, 4));
+    //   matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 7, 7));
+    // }
     // Ilde == screen is black
     matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
   } 
@@ -199,7 +201,7 @@ void loop() {
   // } 
   else {
     // it's ok == idle
-    if (control < 3) {
+    if (control < 2) {
       digitalWrite(mosPin, 0);    
       digitalWrite(ledPin, LOW);
       digitalWrite(fanPin, LOW);
@@ -212,8 +214,47 @@ void loop() {
       matrix.println(" all");
       matrix.println("good");
       delay(1500);
+      // matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 1, 1));
       control++;
+    
+
+    for (int drop = 0; drop < 31; drop++) {
+      matrix.fillRect(0, 0, 32, drop, matrix.Color333(0, 1, 1));
+      // delay(100);
+      int randomVertical = random(0, 32);
+      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 3, 3));
+      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 2, 4));
+      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 0, 0));
+      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 1, 4));
+      matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 7, 7));
+
     }
+    // Ilde == screen is black
+        // matrix.fillRect(0, 0, 32, drop, matrix.Color333(0, 1, 1));
+    matrix.setCursor(2, 6);    
+    matrix.setTextSize(1);     
+    matrix.setTextWrap(false); 
+    matrix.setTextColor(matrix.Color333(7, 2, 2));
+    matrix.println("WATER");
+    matrix.println(" FAIL");
+      delay(2000);
+    }
+
+    else if (control == 2) {
     matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
+    delay(1000);
+    matrix.setCursor(2, 6);    
+    matrix.setTextSize(1);     
+    matrix.setTextWrap(false); 
+    matrix.setTextColor(matrix.Color333(0, 2, 5));
+    matrix.println(" TILL");
+    matrix.println("LATER");
+        delay(1000);
+      control++;
+
+    }
+
+    matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
+    // matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
   }
 }
