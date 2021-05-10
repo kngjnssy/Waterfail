@@ -77,17 +77,19 @@ void setup() {
     matrix.print(humDHT11);
     matrix.println("%");
     delay(800);
-    matrix.println("LOW!");
+    matrix.println(" LOW!");
     delay(2000);
 
-    matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
     matrix.setCursor(2, 2);
     matrix.setTextSize(1);
     matrix.setTextWrap(false);
     matrix.setTextColor(matrix.Color333(7, 2, 2));
+    matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
+    delay(1000);
+    matrix.println(" pls");
     matrix.println("turn");
-    matrix.println(" it");
-    matrix.println("  on!");
+    matrix.println("it on!");
+    matrix.println("<");
     delay(2000);
 
     for (int drop = 0; drop < 31; drop++) {
@@ -99,6 +101,13 @@ void setup() {
       matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 1, 4));
       matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 7, 7));
     }
+    matrix.setCursor(2, 6);
+    matrix.setTextSize(1);
+    matrix.setTextWrap(false);
+    matrix.setTextColor(matrix.Color333(7, 2, 2));
+    matrix.println("WATER");
+    matrix.println(" FAIL");
+    delay(1000);
     matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
 
   } else {
@@ -109,10 +118,9 @@ void setup() {
     matrix.print(humDHT11);
     matrix.println("%");
     delay(1000);
-      
-    matrix.setCursor(2, 15);
     matrix.println("GOOD!");
     delay(3000);
+    // todo: create a function (loop) that handles case when humidity is between optimal and buffer at starting up 
 
     for (int drop = 0; drop < 31; drop++) {
       matrix.fillRect(0, 0, 32, drop, matrix.Color333(0, 6, 6));
@@ -151,12 +159,13 @@ void loop() {
   //   return;
   // }
 
+  // if humidity is below optimal 
   if ( humDHT11 < optimalHumidity ) {
     control = 0;
 
     // when it is not running
     if (operating == 0) {
-        matrix.setCursor(5, 2);
+        matrix.setCursor(10, 2);
         matrix.setTextSize(1);
         matrix.setTextWrap(false);
         matrix.setTextColor(matrix.Color333(7, 2, 2));
@@ -165,9 +174,9 @@ void loop() {
         matrix.println("%");
         matrix.fillRect(0, 10, 32, 32, matrix.Color333(0, 0, 0));
         delay(1000);
-
         matrix.println("turn");
-        matrix.println("on pls");
+        matrix.println("it on!");
+        matrix.println("<");
         delay(1000);
 
     } else if (operating == 1) {
@@ -194,17 +203,30 @@ void loop() {
           matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 1, 4));
           matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 7, 7));
         }
-        matrix.setCursor(2, 6);
-        matrix.setTextSize(1);
-        matrix.setTextWrap(false);
-        matrix.setTextColor(matrix.Color333(7, 2, 2));
-        matrix.println("WATER");
-        matrix.println(" FAIL");
+        // matrix.setCursor(2, 6);
+        // matrix.setTextSize(1);
+        // matrix.setTextWrap(false);
+        // matrix.setTextColor(matrix.Color333(7, 2, 2));
+        // matrix.println("WATER");
+        // matrix.println(" FAIL");
         delay(1000);
     }
   }
 
-  // humdidity is optimal - works
+  // if humidity is above optimal but below buffer >> keep showing current humidity
+  else if (bufferHumidity > humDHT11 && humDHT11 > optimalHumidity) {
+    matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
+    delay(3000);
+    matrix.setCursor(5, 2);
+    matrix.setTextSize(1);
+    matrix.setTextWrap(false);
+    matrix.setTextColor(matrix.Color333(0, 1, 1));
+    matrix.print(humDHT11);
+    matrix.println("%");
+    delay(2000);
+  }
+
+  // humdidity is above buffer == very optimal
   else if (humDHT11 > bufferHumidity) {
     if (control < 1) {
       digitalWrite(mosPin, 0);
@@ -248,7 +270,6 @@ void loop() {
       matrix.println("later!");
       delay(4000);
     }
-
     matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
     delay(3000);
     matrix.setCursor(5, 2);
@@ -257,6 +278,6 @@ void loop() {
     matrix.setTextColor(matrix.Color333(0, 1, 1));
     matrix.print(humDHT11);
     matrix.println("%");
-    delay(1000);
+    delay(2000);
   }
 }
