@@ -15,7 +15,6 @@
 RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false);
 DHT dht11(DHTPIN11, DHTTYPE11);
 
-const int ledPin =  13;
 const int fanPin = 12;
 const int mosPin = 7;
 const int buttonPin = 2;
@@ -25,20 +24,17 @@ int buttonState = 0;
 const int optimalHumidity = 50;
 const int bufferHumidity = optimalHumidity + 10;
 
-
 void setup() {
-  Serial.begin(9600);
+  // Serial.begin(9600);
   dht11.begin();
+  matrix.begin();
 
-  pinMode(ledPin, OUTPUT);
   pinMode(fanPin, OUTPUT);
   pinMode(mosPin, OUTPUT);
   pinMode(buttonPin, INPUT);
 
   digitalWrite(mosPin, 0);
   digitalWrite(buttonPin, 1);
-
-  matrix.begin();
 
   matrix.setCursor(2, 2);   // start at top left, with one pixel of spacing
   matrix.setTextSize(2);     // size 1 == 8 pixels high
@@ -68,8 +64,6 @@ void setup() {
 
   if ( humDHT11 < optimalHumidity ) {
     // if it's TOO LOW
-    digitalWrite(ledPin, HIGH);
-
     matrix.setCursor(9, 12);    
     matrix.setTextSize(1);     
     matrix.setTextWrap(false); 
@@ -143,7 +137,6 @@ void loop() {
 
   // if button is pressed, humidifier and fan turns on..
   if (buttonState == LOW) {
-    // Serial.println("BUTTON LOW");
     digitalWrite(mosPin, 1);
     digitalWrite(fanPin, HIGH);
     operating = 1;
@@ -152,12 +145,6 @@ void loop() {
   int tempDHT11 = dht11.readTemperature();
   int humDHT11 = dht11.readHumidity();
   delay(500);
-
-  // if (isnan(humDHT11))
-  // {
-  //   Serial.println("Failed to read from DHT 11 sensor!");
-  //   return;
-  // }
 
   // if humidity is below optimal 
   if ( humDHT11 < optimalHumidity ) {
@@ -179,9 +166,9 @@ void loop() {
         matrix.println("<");
         delay(1000);
 
+    // when it is running
     } else if (operating == 1) {
         matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
-
         matrix.setCursor(5, 2);
         matrix.setTextSize(1);
         matrix.setTextWrap(false);
@@ -203,17 +190,11 @@ void loop() {
           matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 1, 4));
           matrix.drawLine(randomVertical, random(0, 32) + drop, randomVertical, random(0, 32), matrix.Color333(0, 7, 7));
         }
-        // matrix.setCursor(2, 6);
-        // matrix.setTextSize(1);
-        // matrix.setTextWrap(false);
-        // matrix.setTextColor(matrix.Color333(7, 2, 2));
-        // matrix.println("WATER");
-        // matrix.println(" FAIL");
         delay(1000);
     }
   }
 
-  // if humidity is above optimal but below buffer >> keep showing current humidity
+  // if humidity is above optimal but below buffer > keep showing current humidity
   else if (bufferHumidity > humDHT11 && humDHT11 > optimalHumidity) {
     matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
     delay(3000);
@@ -226,11 +207,10 @@ void loop() {
     delay(2000);
   }
 
-  // humdidity is above buffer == very optimal
+  // humdidity is above buffer, aka very optimal
   else if (humDHT11 > bufferHumidity) {
     if (control < 1) {
       digitalWrite(mosPin, 0);
-      digitalWrite(ledPin, LOW);
       operating = 0;
 
       matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 1));
