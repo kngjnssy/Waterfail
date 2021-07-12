@@ -204,6 +204,9 @@ void loop() {
     matrix.setTextColor(matrix.Color333(0, 1, 1));
     matrix.print(humDHT11);
     matrix.println("%");
+    matrix.print(tempDHT11);
+    matrix.print("\370");
+    matrix.print("C");
     delay(2000);
   }
 
@@ -220,6 +223,7 @@ void loop() {
       matrix.setTextColor(matrix.Color333(1, 7, 7));
       matrix.print(humDHT11);
       matrix.println("%");
+
       delay(1000);
 
       matrix.setCursor(2, 15);
@@ -251,13 +255,16 @@ void loop() {
       delay(4000);
     }
     matrix.fillRect(0, 0, 32, 32, matrix.Color333(0, 0, 0));
-    delay(3000);
+    delay(8000);
     matrix.setCursor(5, 2);
     matrix.setTextSize(1);
     matrix.setTextWrap(false);
     matrix.setTextColor(matrix.Color333(0, 1, 1));
     matrix.print(humDHT11);
     matrix.println("%");
+    matrix.print(tempDHT11);
+    matrix.print("\370");
+    matrix.print("C");
     delay(2000);
   }
 }
